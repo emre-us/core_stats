@@ -1,0 +1,40 @@
+---
+title: "Core Stats Notebook"
+output: html_notebook
+---
+
+# 1. Statistical Inference
+
+We will look at one-sample data, two-sample data, and paired data. We will need the following libraries:
+
+```{r}
+library(tidyverse)
+```
+
+
+## 1.1. One-Sample data
+
+We will begin with the example of male guppies collected from the Guanapo River in Trinidad. Suppose we measure their body lengths and we want to test whether the data support the hypothesis that the mean body is actually 20mm. So we have the following null and alternative hypotheses:
+
+$H_0:$ The mean body length is equal to 20mm ($\mu = 20$). 
+$H_1:$ The mean body length is not equal to 20mm ($\mu \neq 20$). 
+
+To test this we will use a one-sample, two tailed t-test to see if we should reject the null hypothesis or not. We use two-tailed t-test because we are not testing whether the mean is greater than or less than 20mm. We are only testing if it is different from 20mm.
+
+First lets get the data, summarize and visualize it:
+
+```{r}
+fishlengthDF <- read_csv("data/CS1-onesample.csv")
+summary(fishlengthDF)
+```
+
+From the summary output we can see that mean and median of the length variable are very close at 18.3 and 18.5, respectively.
+
+```{r}
+ggplot(fishlengthDF,
+       aes(x = river,
+           y = length)) +
+  geom_boxplot()
+```
+
+The data do not appear to contain any obvious errors. Although mean and median are less than 20, it is not absolutely certain that the sample mean is sufficiently different from this value to be "statistically significant". 
