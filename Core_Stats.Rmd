@@ -38,3 +38,88 @@ ggplot(fishlengthDF,
 ```
 
 The data do not appear to contain any obvious errors. Although mean and median are less than 20, it is not absolutely certain that the sample mean is sufficiently different from this value to be "statistically significant". 
+
+### 1.1.1. Assumptions
+When it comes to one-sample tests, we have two options: t-test and Wilcoxon signed-rank test.
+
+To use a t-test we have to make two assumptions: parent distribution from which the sample is taken is normally distributed, and data in the sample are independent.
+The first assumption can be checked. There are three ways of checking for normality. In order of rigor, these are:
+a) Histogram
+b) Quantile-Quantile (Q-Q) plot
+c) Shapiro-Wil test
+
+#### 1.1.1.a. Histogram
+```{r}
+ggplot(fishlengthDF,
+       aes(x = length)) +
+  geom_histogram(bins = 15)
+```
+
+From the histogram we can see that the distribution is unimodal and symmetric, so we can't clearly conclude that it is non-normal. But there are a lot of distributions that have these properties but not normal. So this is not very rigorous.
+
+#### 1.1.1.b. Q-Q Plot
+Sometimes referred to as Diagnostic plot, Q-Q plot is a way of comparing two distributions: one of the data and one of the theoretical normal distribution
+```{r}
+ggplot(fishlengthDF,
+       aes(sample = length)) +
+  stat_qq() +
+  stat_qq_line(color = "blue")
+```
+
+If the data were normally distributed then all of the points should lie on, or close to, the diagonal line. Here, the tails of the distribution are below and above the line so they are a bit more spread out than normal. There is not a simple unambiguous answer when interpreting these in terms of whether the assumption of normality has been met or not. It often boils down to experience. It is a very rare situation where the assumptions necessary for a test will be met unequivocally and a certain degree of interpretation is needed to decide if the data are normal enough to be confident in the validity of the test.
+
+#### 1.1.1.c. Shapiro-Wilk test
+This is one of a number of formal statistical test that assesses whether a given sample of numbers come from a normal distribution. It calculates the prob. of getting the sample data if the underlying distribution is in fact normal. 
+```{r}
+shapiro.test(fishlengthDF$length)
+```
+The output:
+1st line gives the name of the test and "data:" tells you which data are used
+3rd line contains two key outputs from the test: The calculated W-statistic is 0.9494, and the p-value is 0.1764.
+
+Since the p-value is larger than say 0.05, we can say that there is insufficient evidence to reject the null hypothesis that the sample came from a normal distribution.
+
+It is important to note the limitations of Shapiro-Wilk test, in that it is sensitive to the sample sizes. In general, for small sample sizes, the test is very relaxed about normality and nearly all data sets are considered normal; while for large sample sizes the test can be overly strict, and it can fail to recognize data sets that are very nearly normal indeed.
+
+IN this example, the graphical Q-Q plot analysis was not especially conclusive as there were some suggestion of snaking in the plots. However, Shapiro-Wilk test gave a non-significant p-value. These, along with the histogram and the recognition that there were only 30 data points in the sample, I probably would be happy that the assumptions of the t-test were met well enough to trust the result of the t-test.
+
+If not happy, though, we could consider an alternative test that has less stringent assumptions but also less powerful: the one-sample Wilcoxon signed-rank test.
+
+Now we are ready to run the t-test.
+
+### 1.1.2. t-test and its interpretation
+
+```{r}
+t.test(fishlengthDF$length,
+       mu = 20, 
+       alternative = "two.sided")
+
+# the first argument must be a numerical vector of data values, In our case it is the 'length' values.
+# the secons argument must be a number and is the mean to be tested under the null hypothesis.
+# the third argument gives the type of alternative hypothesis and must be one of 'two.sided', 'greater', or 'less'.
+```
+
+In the output:
+1st line gives the name of the test and the 2nd line reminds you on what data the test is applied
+3rd line contains three key outputs from the test: calculated t-value which is needed for reporting, degrees of freedom which is also needed for reporting, and the p-value.
+4th line states the alternative hypothesis
+5th and 6th line gives the 95% confidence interval. If you want to change the this, you can put in the argument conf.level = 0.99
+7th, 8th, and 9th lines give the sample mean
+
+In this case the confidence interval does not include our 20mm and the p-value is much smaller than 0.05 so we reject the null hypothesis and state the following:
+"A one-sample t-test indicated that the mean body length of male guppies (18.29mm) differs significantly from 20mm (t=-3.55, p=0.0014, CI=[17.31,19.28])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
