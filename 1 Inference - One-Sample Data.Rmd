@@ -3,7 +3,7 @@ title: "Core Stats Notebook"
 output: html_notebook
 ---
 
-# 1. Statistical Inference
+# Statistical Inference
 
 We will look at one-sample data, two-sample data, and paired data. We will need the following libraries:
 
@@ -12,7 +12,7 @@ library(tidyverse)
 ```
 
 
-## 1.1. One-Sample data
+## One-Sample data
 
 We will begin with the example of male guppies collected from the Guanapo River in Trinidad. Suppose we measure their body lengths and we want to test whether the data support the hypothesis that the mean body is actually 20mm. So we have the following null and alternative hypotheses:
 
@@ -39,7 +39,7 @@ ggplot(fishlengthDF,
 
 The data do not appear to contain any obvious errors. Although mean and median are less than 20, it is not absolutely certain that the sample mean is sufficiently different from this value to be "statistically significant". 
 
-### 1.1.1. Assumptions
+### 1. Assumptions
 When it comes to one-sample tests, we have two options: t-test and Wilcoxon signed-rank test.
 
 To use a t-test we have to make two assumptions: parent distribution from which the sample is taken is normally distributed, and data in the sample are independent.
@@ -48,7 +48,7 @@ a) Histogram
 b) Quantile-Quantile (Q-Q) plot
 c) Shapiro-Wil test
 
-#### 1.1.1.a. Histogram
+#### 1.a. Histogram
 ```{r}
 ggplot(fishlengthDF,
        aes(x = length)) +
@@ -57,7 +57,7 @@ ggplot(fishlengthDF,
 
 From the histogram we can see that the distribution is unimodal and symmetric, so we can't clearly conclude that it is non-normal. But there are a lot of distributions that have these properties but not normal. So this is not very rigorous.
 
-#### 1.1.1.b. Q-Q Plot
+#### 1.b. Q-Q Plot
 Sometimes referred to as Diagnostic plot, Q-Q plot is a way of comparing two distributions: one of the data and one of the theoretical normal distribution
 ```{r}
 ggplot(fishlengthDF,
@@ -68,7 +68,7 @@ ggplot(fishlengthDF,
 
 If the data were normally distributed then all of the points should lie on, or close to, the diagonal line. Here, the tails of the distribution are below and above the line so they are a bit more spread out than normal. There is not a simple unambiguous answer when interpreting these in terms of whether the assumption of normality has been met or not. It often boils down to experience. It is a very rare situation where the assumptions necessary for a test will be met unequivocally and a certain degree of interpretation is needed to decide if the data are normal enough to be confident in the validity of the test.
 
-#### 1.1.1.c. Shapiro-Wilk test
+#### 1.c. Shapiro-Wilk test
 This is one of a number of formal statistical test that assesses whether a given sample of numbers come from a normal distribution. It calculates the prob. of getting the sample data if the underlying distribution is in fact normal. 
 ```{r}
 shapiro.test(fishlengthDF$length)
@@ -87,7 +87,7 @@ If not happy, though, we could consider an alternative test that has less string
 
 Now we are ready to run the t-test.
 
-### 1.1.2. t-test and its interpretation
+### 2. t-test and its interpretation
 
 ```{r}
 t.test(fishlengthDF$length,
@@ -111,14 +111,61 @@ In this case the confidence interval does not include our 20mm and the p-value i
 
 
 
+### 3. What if data is non-normal?
+For a one-sample data set there is the Wilcoxon signed rank test. This test does not assume that the parent distribution is normally distributed. We do still need the parent distribution and the sample to be the same shape and scale, though. The Wilcoxon signed rank test checks if the rank-transformed values are symmetric around the *median*. So with this test we check if the median, as opposed to the mean, of the parent distribution differs significantly from a given hypothesized value. 
+
+We can use the same fishlength data set. Our hypothesis changes in that we now test whether the data support the hypothesis that the median body length is actually 20mm as opposed mean body length. We will use a one-sample, two-tailed Wilcoxon signed rank test to see if we should reject the null hypothesis or not.
+
+First we would summarize and visualize the data but since we did this above, we do not need to do it here again.
+
+#### 3.1 Assumptions
+In order to use a one-sample Wilcoxon signed rank test for this analysis - and for the results to be strictly valid - we have to make two assumptions:
+1) The data are distributed symmetrically around the mean
+2) Each data point in the sample is independent of others.
+
+While there are formal statistical tests for symmetry, we will opt for a simple visual inspection using both a boxplot and a histogram.
+
+```{r}
+#first determine the median
+median_fishlength <- median(fishlengthDF$length)
+#next create a histogram
+fishlengthDF %>%
+  ggplot(aes(x = length)) +
+  geom_histogram(bins = 10) +
+  geom_vline(xintercept = median_fishlength,
+             color = "blue")
+```
+
+We can similarly create a boxplot:
+```{r}
+fishlengthDF %>% 
+  ggplot(aes(y = length)) +
+  geom_boxplot()
+```
+
+Here we can see that whilst the distribution isn’t perfectly symmetric, neither is it heavily skewed to the left or right and we can make the call that the distribution is symmetric enough for us to be happy with the results of the test.
 
 
+#### 3.2 One-Sample, Two-Tailed Wilcoxon Signed Rank Test
+```{r}
+wilcox.test(fishlengthDF$length,
+            mu = 20,
+            alternative = "two.sided")
 
+# first argument must be numerical vector, second argument is the median we are testing under null, and third can be "two.sided", "greater", or "less".
+```
 
+In the output:
+The first line gives a warning - and not an error - message regarding the implementation of this test. It is letting us know that some of the data values are identical to each other. This is not supposed to happen as we should be dealing with continuous data for this test. For now, we can ignore it here. It then gives you the name of the test and reminds us which data we are testing this on. We then get two outputs, V and p-value. The last line tells us the alternative hyptohesis.
 
+P-value gives us the probability of us getting a sample such as ours if the null hypothesis were actually true. Given p-value is even smaller than 0.01, we can reject the null and state the following:
+"A one-sample Wilcoxon signed rank test indicated that the median bondy length of male guppies (median = 18.8mm) differs significantly from 20mm (p = 0.0012)."
 
-
-
+### Key Points
+1) One-sample tests are used when you have a single sample of continuous data
+2) The t-test assumes that the data are normally distributed and independent of each other
+3) A good way of assessing the assumption of normality is by checking the data against a Q-Q plot
+4) The Wilcoxon signed rank test is used when you have a single sample of continuous data, which is not normally distributed
 
 
 
