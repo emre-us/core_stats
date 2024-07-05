@@ -1,0 +1,82 @@
+---
+title: "Core Stats: Inference: Paired data"
+output: html_notebook
+---
+
+# Inference
+
+## Paired Data
+
+1) When do I perform a paired two-sample test?
+2) What are the assumptions?
+3) How do I interpret and present the results of the test?
+4) How do I deal with paired non-normal data?
+
+```{r}
+library(tidyverse)
+```
+
+
+### 1. When to perform a paired two-sample test?
+A paired t-test is used when we have two samples of continuous data that can be paired (examples of these sort of data would be weights of individuals before and after a diet). This test is applicable if the number of paired points within the samples is large (>30) or, if the number of points is small, then this test also works when the parent distributions are normally distributed.
+
+Suppose we measure the cortisol levels in 20 adult females (nmol/l) first thing in the morning and again in the evening. We want to test whether the cortisol levels differ between the two measurement times. We will initially form the following null and alternative hypotheses:
+
+$H_9$: There is no difference in cortisol level between times $(\mu M = \mu E)$
+$H_1$: There is a difference in cortisol levels between times $(\mu M \neq \mu E)$
+
+Notice we have two samples and we want to know if our data suggests that the true (ie population) means differ from one another rather than one mean specifically bigger or smaller than the other. So we use a two-tailed test. Since each data point in the first sample can be linked to another data point in the second sample by a connecting factor, we use a *paired* test. Finally, we are assuming that the parent populations are normal and have equal variance, thus we use a t-test.
+
+Therefore, we use a two-sample, two-tailed, paired t-test to see if we can reject the null.
+
+Let's load up the data:
+```{r}
+cortisolDF <- read_csv("data/CS1-twopaired.csv")
+head(cortisolDF)
+```
+
+As before we will summarize and visualize the data first.
+
+```{r}
+ggplot(cortisolDF,
+       aes(x = time, y = cortisol)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.05) +  #we use geom_jitter instead of geom_point to add a small amount of variation in the points for better visibility and avoid overlapping points in the boxplot
+  ylab("Cortisol level (nmol/l)")
+```
+
+However, we are interested in visualizing how the cortisol level of each individual subject has changed and this boxplot does not give us that information. To explore the individual changes between morning and evening we need to look at the differences between the two times of measurement for each patient. To do this, we need to put our data into a wider format. This way we can calculate the changes in the cortisol level for each patient. For this we will use the pivot_wider() function within tidyverse.
+
+```{r}
+cortisol_diffDF <- cortisolDF %>%
+  pivot_wider(id_cols = patient_id, #says that each observational unit is determined by patient_id
+              names_from = time, #says that there will be new columns with names from the 'time' column (here we only have morning and evening)
+              values_from = cortisol) %>% #instruction to populate the new columns with the values coming from the 'cortisol' column
+  mutate(cortisol_change = evening - morning) #create a new column called 'cortisol_change' that contains the difference between evening and morning measurements
+
+head(cortisol_diffDF)
+```
+
+Lets plot this:
+```{r}
+ggplot(cortisol_diffDF,
+       aes(y = cortisol_change)) +
+  geom_boxplot() +
+  ylab("Change in cortisol (nmol/l)")
+```
+
+The differences in cortisol levels appear to be very much less than zero, meaning that the evening cortisol levels appear to be much lower than the morning ones. As such we would expect that the test would give a pretty significant result.
+
+An alternative representation would be to plot the data points for both evening and morning and connect them by patient:
+```{r}
+ggplot(cortisolDF,
+       aes(x = time,
+           y = cortisol,
+           group = patient_id)) +
+  geom_point() +
+  geom_line()
+```
+This gives a similar picture to what the boxplot was telling us, that for most patients the cortisol levels are higher in the morning than in the evening.
+
+
+### 2. What are the assumptions?

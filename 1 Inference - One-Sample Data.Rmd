@@ -1,5 +1,5 @@
 ---
-title: "Core Stats Notebook"
+title: "Core Stats: Inference: One=Sample data"
 output: html_notebook
 ---
 

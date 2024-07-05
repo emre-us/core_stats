@@ -1,8 +1,14 @@
+---
+title: "Core Stats: Inference: Two-Sample data"
+output: html_notebook
+---
+
+
 # Inference
 
 ## Two-Sample Data
 Kwy questions to consider:
-1) WHen do I perform a two-sample test?
+1) When do I perform a two-sample test?
 2) What are the assumptions?
 3) How do I interpret and present the results of the test?
 4) How do I deal with non-normal data?
