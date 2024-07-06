@@ -80,3 +80,67 @@ This gives a similar picture to what the boxplot was telling us, that for most p
 
 
 ### 2. What are the assumptions?
+Because we are not interested in the distributions of morning and evening cortisol levels but in the differences between the two, we need the differences between the two to be distributed normally. We can check this with Shapiro-Wilk test and Q-Q plots, using the wide data frame we created above
+```{r}
+cortisol_diffDF %>%
+  pull(cortisol_change) %>%
+  shapiro.test()
+
+#Alternatively
+# shapiro.test(cortisol_diffDF$cortisol_change)
+```
+Remember that the p-value gives the probability of observing each sample if the parent population is actually normally distributed. So here we can't reject the null that it is normally distributed. However, also don't forget Shapiro-Wilk test is quite sensitive to sample size. This means that if you have a large sample then even small deviations from normality will cause the sample to fail the test, whereas smaller samples are allowed to pass with much larger deviations.
+
+Let's look at the Q-Q plot as well:
+```{r}
+cortisol_diffDF %>%
+  ggplot(aes(sample = cortisol_change)) +
+  stat_qq() +
+  stat_qq_line(color = "blue")
+```
+
+The Q-Q plot is mostly fine, there is some suggestion of snaking at the bottom left which is actually driven by only a single point (which can happen by chance). We can consider the normality test being met here as well.
+
+Accordingly, we can conclude t-test is appropriate for this data set.
+
+
+
+### 3. Two-sample, paired, two-tailed t-test
+```{r}
+t.test(cortisol ~ time,
+       alternative = "two.sided",
+       paired = TRUE,
+       data = cortisolDF)
+
+
+```
+
+The p value is is considerably less than 0.01 so we can reject the null hypothesis and state the following:
+
+"A two-tailed, paired t-test indicated that the average cortisol level in adult females differed significantly between the morning (313.5nmol/l) and the evening (197.4 nmol/l, p=0.53e-05)."
+
+
+
+### 4. Non-normal paired data
+The example above assumes that the paired data come from parent distributions that are normal. As we’ve seen before, we may have data where we can’t rely on that assumption. Fortunately, there is very little that we need to change in our approach if we want to analyse paired data that violate the assumption of normality.
+
+As with the non-normal two-sample data, there is the underlying assumption that the parent distributions of the samples are comparable in shape and variance.
+
+The hyopthesis we are testing changes from mean difference being 0 to median difference being 0. We will use a two-tailed Wilcoxon signed rank test to see if we can reject the null hypothesis.
+
+```{r}
+wilcox.test(cortisol ~ time,
+            alternative = "two.sided",
+            paired = TRUE,
+            data = cortisolDF)
+```
+Again the p-value is coniderably less than 0.01, so we can reject the null hypothesis and conclude:
+"A two-tailed Wilcoxon signed rank test indicated that the median cortisol level in adult females different significantly between the morning (320.5 nmol/l) and the evening (188.9 nmol/l, p=0.00017)."
+
+
+
+### Summary
+Paired t-tests are used when you have two paired samples of continuous data, which are normally distributed and have equal variance
+A good way of assessing the assumption of normality is by checking the data against a Q-Q plot
+We can check equality of variance (homoscedasticity) with Bartlett’s (normal data) or Levene’s (non-normal data) test
+The Wilcoxon signed rank test is used when you have two paired samples of continuous data, which are not normally distributed (but have comparable distributional shapes), and have equal variance.
