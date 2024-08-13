@@ -1,0 +1,10 @@
+"0","```r
+# we group the data by river
+# then create a panel per river
+# containing the Q-Q plot for that river
+ggplot(rivers,
+       aes(sample = length)) +
+  stat_qq() +
+  stat_qq_line(colour = \"blue\") +
+  facet_wrap(facets = vars(river))
+```"

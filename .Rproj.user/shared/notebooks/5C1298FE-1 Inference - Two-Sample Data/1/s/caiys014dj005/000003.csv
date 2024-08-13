@@ -1,0 +1,11 @@
+"0","```r
+summary(rivers)
+```"
+"1","    river               length     
+ Length:68          Min.   :11.20  
+ Class :character   1st Qu.:18.40  
+ Mode  :character   Median :19.30  
+                    Mean   :19.46  
+                    3rd Qu.:20.93  
+                    Max.   :26.40  
+"

@@ -1,0 +1,14 @@
+"0","```r
+wilcox.test(fishlengthDF$length,
+            mu = 20,
+            alternative = \"two.sided\")
+```"
+"1","Warning: cannot compute exact p-value with ties
+"
+"1","
+	Wilcoxon signed rank test with continuity correction
+
+data:  fishlengthDF$length
+V = 67.5, p-value = 0.001222
+alternative hypothesis: true location is not equal to 20
+"

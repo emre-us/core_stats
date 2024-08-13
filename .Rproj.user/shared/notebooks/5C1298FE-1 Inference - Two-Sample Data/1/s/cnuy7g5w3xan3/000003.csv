@@ -1,0 +1,16 @@
+"0","```r
+
+# perform the Mann-Whitmey U test:
+wilcox.test(length ~ river,
+            alternative = \"two.sided\",
+            data = rivers)
+```"
+"1","Warning: cannot compute exact p-value with ties
+"
+"1","
+	Wilcoxon rank sum test with continuity correction
+
+data:  length by river
+W = 841, p-value = 0.0006464
+alternative hypothesis: true location shift is not equal to 0
+"

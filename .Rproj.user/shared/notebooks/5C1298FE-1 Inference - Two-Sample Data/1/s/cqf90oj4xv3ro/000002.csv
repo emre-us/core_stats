@@ -1,0 +1,11 @@
+"0","```r
+library(tidyverse)
+library(rstatix) #converts stats functions to a tidyverse-friendly format
+```"
+"1","
+Attaching package: ‘rstatix’
+
+The following object is masked from ‘package:stats’:
+
+    filter
+"

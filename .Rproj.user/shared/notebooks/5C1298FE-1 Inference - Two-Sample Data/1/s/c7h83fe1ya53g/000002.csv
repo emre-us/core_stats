@@ -1,0 +1,18 @@
+"0","```r
+t.test(length ~ river,
+       alternative = \"two.sided\",
+       var.equal = TRUE,
+       data = rivers)
+```"
+"1","
+	Two Sample t-test
+
+data:  length by river
+t = 3.8433, df = 66, p-value = 0.0002754
+alternative hypothesis: true difference in means between group Aripo and group Guanapo is not equal to 0
+95 percent confidence interval:
+ 0.9774482 3.0909868
+sample estimates:
+  mean in group Aripo mean in group Guanapo 
+             20.33077              18.29655 
+"

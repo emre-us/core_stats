@@ -1,0 +1,9 @@
+"0","```r
+shapiro.test(fishlengthDF$length)
+```"
+"1","
+	Shapiro-Wilk normality test
+
+data:  fishlengthDF$length
+W = 0.94938, p-value = 0.1764
+"

@@ -1,0 +1,12 @@
+"0","```r
+summary(fishlengthDF)
+
+```"
+"1","       id        river               length    
+ Min.   : 1   Length:29          Min.   :11.2  
+ 1st Qu.: 8   Class :character   1st Qu.:17.5  
+ Median :15   Mode  :character   Median :18.8  
+ Mean   :15                      Mean   :18.3  
+ 3rd Qu.:22                      3rd Qu.:19.7  
+ Max.   :29                      Max.   :23.3  
+"

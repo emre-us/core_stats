@@ -1,0 +1,6 @@
+"0","```r
+levene_test(data = rivers,
+            formula = length ~ river)
+```"
+"1","Warning: group coerced to factor.
+"

@@ -1,0 +1,25 @@
+"0","```r
+#We can use the filter() function to filter the data by river, then we perform the Shapiro-Wilk test on the length measurement. The shapiro.test() function needs the data in a vector format. We get these by using the pull() function.
+rivers %>%
+  filter(river == \"Aripo\") %>%
+  pull(length) %>%
+  shapiro.test()
+```"
+"1","
+	Shapiro-Wilk normality test
+
+data:  .
+W = 0.93596, p-value = 0.02802
+"
+"0","```r
+rivers %>%
+  filter(river == \"Guanapo\") %>%
+  pull(length) %>%
+  shapiro.test()
+```"
+"1","
+	Shapiro-Wilk normality test
+
+data:  .
+W = 0.94938, p-value = 0.1764
+"

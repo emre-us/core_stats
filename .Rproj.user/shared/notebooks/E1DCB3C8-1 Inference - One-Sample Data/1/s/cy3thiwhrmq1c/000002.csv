@@ -1,0 +1,21 @@
+"0","```r
+t.test(fishlengthDF$length,
+       mu = 20, alternative = \"two.sided\")
+```"
+"1","
+	One Sample t-test
+
+data:  fishlengthDF$length
+t = -3.5492, df = 28, p-value = 0.001387
+alternative hypothesis: true mean is not equal to 20
+95 percent confidence interval:
+ 17.31341 19.27969
+sample estimates:
+mean of x 
+ 18.29655 
+"
+"0","```r
+# the first argument must be a numerical vector of data values, In our case it is the 'length' values.
+# the secons argument must be a number and is the mean to be tested under the null hypothesis.
+# the third argument gives the type of alternative hypothesis and must be one of 'two.sided', 'greater', or 'less'.
+```"

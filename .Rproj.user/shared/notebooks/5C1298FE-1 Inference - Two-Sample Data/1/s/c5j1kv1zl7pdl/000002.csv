@@ -1,0 +1,6 @@
+"0","```r
+#get common summary stats for the length column
+rivers %>%
+  group_by(river) %>%
+  get_summary_stats(type = \"common\")
+```"

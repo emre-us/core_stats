@@ -1,0 +1,9 @@
+"0","```r
+bartlett.test(length ~ river, data = rivers)
+```"
+"1","
+	Bartlett test of homogeneity of variances
+
+data:  length by river
+Bartlett's K-squared = 4.4734, df = 1, p-value = 0.03443
+"

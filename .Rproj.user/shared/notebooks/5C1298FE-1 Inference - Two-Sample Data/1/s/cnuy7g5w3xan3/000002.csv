@@ -1,0 +1,6 @@
+"0","```r
+#find the medians
+rivers %>%
+  group_by(river) %>%
+  summarize(median_length = median(length))
+```"
