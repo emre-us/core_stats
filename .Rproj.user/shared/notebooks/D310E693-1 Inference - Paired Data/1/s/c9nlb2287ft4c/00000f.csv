@@ -1,0 +1,5 @@
+"0","ggplot(cortisolDF,"
+"0","       aes(x = time, y = cortisol)) +"
+"0","  geom_boxplot() +"
+"0","  geom_jitter(width = 0.05) +  #we use geom_jitter instead of geom_point to add a small amount of variation in the points for better visibility and avoid overlapping points in the boxplot"
+"0","  ylab(""Cortisol level (nmol/l)"")"

@@ -1,0 +1,4 @@
+"0","#plot the data"
+"0","ggplot(oystercatcher,"
+"0","       aes(x = site, y= feeding)) +"
+"0","  geom_boxplot()"

@@ -1,0 +1,4 @@
+"0","ggplot(fishlengthDF,"
+"0","       aes(sample = length)) +"
+"0","  stat_qq() +"
+"0","  stat_qq_line(color = ""blue"")"

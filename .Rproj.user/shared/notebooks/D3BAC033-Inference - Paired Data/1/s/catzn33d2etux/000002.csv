@@ -1,0 +1,9 @@
+"0","```r
+cortisol_diffDF <- cortisolDF %>%
+  pivot_wider(id_cols = patient_id, #says that each observational unit is determined by patient_id
+              names_from = time, #says that there will be new columns with names from the 'time' column (here we only have morning and evening)
+              values_from = cortisol) %>% #instruction to populate the new columns with the values coming from the 'cortisol' column
+  mutate(cortisol_change = evening - morning) #create a new column called 'cortisol_change' that contains the difference between evening and morning measurements
+
+head(cortisol_diffDF)
+```"

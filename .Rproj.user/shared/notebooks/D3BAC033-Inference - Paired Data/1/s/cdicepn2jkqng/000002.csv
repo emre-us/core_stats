@@ -1,0 +1,13 @@
+"0","```r
+cortisolDF <- read_csv(\"data/CS1-twopaired.csv\")
+```"
+"1","Rows: 40 Columns: 3── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Delimiter: \",\"
+chr (1): time
+dbl (2): patient_id, cortisol
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+"
+"0","```r
+head(cortisolDF)
+```"

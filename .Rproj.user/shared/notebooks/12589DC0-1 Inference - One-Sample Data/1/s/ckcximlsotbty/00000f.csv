@@ -1,0 +1,8 @@
+"0","#first determine the median"
+"0","median_fishlength <- median(fishlengthDF$length)"
+"0","#next create a histogram"
+"0","fishlengthDF %>%"
+"0","  ggplot(aes(x = length)) +"
+"0","  geom_histogram(bins = 10) +"
+"0","  geom_vline(xintercept = median_fishlength,"
+"0","             color = ""blue"")"

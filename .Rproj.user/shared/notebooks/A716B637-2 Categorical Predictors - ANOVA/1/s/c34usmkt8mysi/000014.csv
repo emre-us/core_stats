@@ -1,0 +1,23 @@
+"0","#load the data"
+"0","oystercatcher <- read_csv(""../../data/CS2-oystercatcher-feeding.csv"")"
+"2","[1mRows: [22m[34m120[39m [1mColumns: [22m[34m2[39m"
+"2","[36m──[39m [1mColumn specification[22m [36m────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m (1): site
+[32mdbl[39m (1): feeding"
+"2","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message."
+"0","#load libraries"
+"0","library(tidyverse)"
+"0","library(rstatix) # Converts stats functions to a tidyverse-friendly format"
+"0","library(ggResidpanel) # Creates diagnostic plots using ggplot2"
+"2","Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+"
+"2","Registered S3 method overwritten by 'htmlwidgets':
+  method           from         
+  print.htmlwidget tools:rstudio
+"
+"0","head(oystercatcher)"

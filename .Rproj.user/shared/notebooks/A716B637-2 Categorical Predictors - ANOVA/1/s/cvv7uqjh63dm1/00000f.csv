@@ -1,0 +1,22 @@
+"0","#check equality of variance
+bartlett.test(feeding ~ site,
+              data = oystercatcher)
+"
+"1","
+"
+"1","	Bartlett test of homogeneity of variances"
+"1","
+"
+"1","
+"
+"1","data:  "
+"1",""
+"1","feeding by site"
+"1",""
+"1","
+"
+"1","Bartlett's K-squared = 0.29598, df = 2, p-value = 0.8624"
+"1","
+"
+"1","
+"

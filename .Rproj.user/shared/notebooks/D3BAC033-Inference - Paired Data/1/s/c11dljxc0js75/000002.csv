@@ -1,0 +1,18 @@
+"0","```r
+t.test(cortisol ~ time,
+       alternative = \"two.sided\",
+       paired = TRUE,
+       data = cortisolDF)
+```"
+"1","
+	Paired t-test
+
+data:  cortisol by time
+t = -5.1833, df = 19, p-value = 5.288e-05
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ -162.96038  -69.20962
+sample estimates:
+mean difference 
+       -116.085 
+"

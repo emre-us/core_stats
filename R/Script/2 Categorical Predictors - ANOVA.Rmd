@@ -1,0 +1,127 @@
+---
+title: "Core Stats: Categorical Predictors: ANOVA"
+output: html_notebook
+---
+
+# Categorical Predictors
+
+## ANOVA
+
+How do I analyse multiple samples of continuous data?
+What is an ANOVA?
+How do I check for differences between groups?
+
+
+
+### 1. Purpose and aim
+Analysis of variance or ANOVA is a test than can be used when we have multiple samples of continuous response data. Whilst it is possible to use ANOVA with only two samples, it is generally used when we have three or more groups. It is used to find out if the samples came from parent distributions with the same mean. It can be thought of as a generalization of the two-sample Student’s t-test.
+
+
+
+### 2. Data and hypothesis
+
+For example, suppose we measure the feeding rate of oyster catchers (shellfish per hour) at three sites characterized by their degree of shelter from the wind, called "exposed" (E), "partially sheltered" (P), and "sheltered" (S). We want to test whether the data support the hypothesis that feeding rates don’t differ between locations. We form the following null and alternative hypotheses:
+
+$H_0:$ The mean feeding rates at all three sites is the same  $\mu E = \mu P = \mu S$
+$H_1:$ The mean feeding rates are not all equal.
+
+Because there are more than two groups (and we don't know any better yet wrt assumptions) we will use ANOVA test, and because we only have one predictor variable (the categorical variable location) we will use a *one-way* ANOVA test.
+
+```{r}
+#load the data
+oystercatcher <- read_csv("../../data/CS2-oystercatcher-feeding.csv")
+
+#load libraries
+library(tidyverse)
+library(rstatix) # Converts stats functions to a tidyverse-friendly format
+library(ggResidpanel) # Creates diagnostic plots using ggplot2
+
+head(oystercatcher)
+```
+
+The data set contains two columns: "site" which has info on the shelter of the feeding location, and "feeding", which has feeding rates. Lets get some descriptive statistics:
+
+```{r}
+#get descriptive statistics
+
+oystercatcher %>%
+  group_by(site) %>%
+  get_summary_stats(type = "common")
+```
+
+We see that each shelter site has a sample size of 40.
+
+We can also plot the data by "site":
+```{r}
+#plot the data
+ggplot(oystercatcher,
+       aes(x = site, y= feeding)) +
+  geom_boxplot()
+```
+
+Looking at the data, there appears to be a noticeable difference in feeding rates between the three sites. We would probably expect a reasonably significant statistical result here.
+
+
+
+### 3. Assumptions
+To use an ANOVA test, we have to make three assumptions:
+
+1) The parent distributions from which the samples are taken are normally distributed
+2) Each data point in the samples is independent of the others
+3) The parent distributions should have the same variance
+
+In a similar way to the two-sample tests we will consider the normality and equality of variance assumptions both using tests and by graphical inspection (and ignore the independence assumption).
+
+#### 3.1 Normality
+First we perform Shapiro-Wilk test on each site separately, as we did on the One-Sample Data discussion. Remember, the Shapiro-Wilk test is quite sensitive to sample size. This means that if you have a large sample then even small deviations from normality will cause the sample to fail the test, whereas smaller samples are allowed to pass with much larger deviations.
+```{r}
+#Shapiro-Wilk test on each site. We will filter for each type of 'site', extract the 'feeding' rates and send those data to the shapiro.test() function
+
+oystercatcher %>%
+  filter(site == "exposed") %>%
+  pull(feeding) %>%
+  shapiro.test()
+
+oystercatcher %>%
+  filter(site == "partial") %>%
+  pull(feeding) %>%
+  shapiro.test()
+
+oystercatcher %>%
+  filter(site == "sheltered") %>%
+  pull(feeding) %>%
+  shapiro.test()
+```
+Remember that the p-value gives the probability of observing each sample if the parent population is actually normally distributed. So here we can't reject the null that it is normally distributed. However, also don't forget Shapiro-Wilk test is quite sensitive to sample size. This means that if you have a large sample then even small deviations from normality will cause the sample to fail the test, whereas smaller samples are allowed to pass with much larger deviations.
+
+*Important* to note that for ANOVA, onsidering each group in turn is often considered quite excessive and, in most cases, it is sufficient to consider the normality of the combined set of residuals from the data. To get hold of these residuals, we need to create a linear model.
+
+So we create a linear model, extract the residuals and check their normality:
+```{r}
+#create a linear model (lm) where the feeding rate depends on the site using oystercatcher data
+lm_oystercatcher <- lm(feeding ~ site, 
+                       data = oystercatcher)
+```
+
+Now we extract the residuals from this object we created (lm_oystercatcher) and use this in the shapiro.test() function:
+
+```{r}
+#extract residuals
+resid_oyster <- residuals(lm_oystercatcher)
+
+#perform Shapiro-Wilk test on residuals
+shapiro.test(resid_oyster)
+```
+
+We can again see that the combined residuals from all three groups appear to be normally distributed, which is what we'd expect since they all seemed to be normally distributed individually.
+
+#### 3.2. Homoskedasticity (equality of variance)
+Since all the individual groups are normally distributed, we can test for homoskedasticity using Bartlett's test. The reason why we’re checking for equality of variance (also referred to as homogeneity of variance) is because many statistical tests assume that the spread of the data within different parental populations is the same. If that is indeed the case, then the data themselves should have equal spread as well.
+
+```{r}
+#check equality of variance
+bartlett.test(feeding ~ site,
+              data = oystercatcher)
+```
+
+Based on the p-value of 0.8624, we see that each group appears to have comparable variance.

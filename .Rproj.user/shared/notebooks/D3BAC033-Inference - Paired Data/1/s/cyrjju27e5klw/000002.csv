@@ -1,0 +1,16 @@
+"0","```r
+cortisol_diffDF %>%
+  pull(cortisol_change) %>%
+  shapiro.test()
+```"
+"1","
+	Shapiro-Wilk normality test
+
+data:  .
+W = 0.92362, p-value = 0.1164
+"
+"0","```r
+# shapiro.test(cortisol_diffDF$cortisol_change)
+
+
+```"

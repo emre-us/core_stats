@@ -1,0 +1,6 @@
+"0","ggplot(cortisolDF,"
+"0","       aes(x = time,"
+"0","           y = cortisol,"
+"0","           group = patient_id)) +"
+"0","  geom_point() +"
+"0","  geom_line()"

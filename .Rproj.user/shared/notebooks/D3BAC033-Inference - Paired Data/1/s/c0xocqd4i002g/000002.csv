@@ -1,0 +1,13 @@
+"0","```r
+wilcox.test(cortisol ~ time,
+            alternative = \"two.sided\",
+            paired = TRUE,
+            data = cortisolDF)
+```"
+"1","
+	Wilcoxon signed rank exact test
+
+data:  cortisol by time
+V = 13, p-value = 0.0001678
+alternative hypothesis: true location shift is not equal to 0
+"
