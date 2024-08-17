@@ -11,6 +11,12 @@ How do I analyse multiple samples of continuous data?
 What is an ANOVA?
 How do I check for differences between groups?
 
+```{r}
+library(tidyverse)
+library(rstatix) # Converts stats functions to a tidyverse-friendly format
+library(ggResidpanel) # Creates diagnostic plots using ggplot2
+```
+
 
 
 ### 1. Purpose and aim
@@ -125,3 +131,63 @@ bartlett.test(feeding ~ site,
 ```
 
 Based on the p-value of 0.8624, we see that each group appears to have comparable variance.
+
+#### 3.3 Graphical interpretation and diagnostic plots
+
+Assessing assumptions via these tests can be cumbersome, but also a bit misleading at times. It reduces the answer to the question “is the assumption met?” to a yes/no, based on some statistic and associated p-value.
+
+This does not convey that things aren’t always so clear-cut and that there is a lot of grey area that we need to navigate. As such, assessing assumptions through graphical means - using diagnostic plots - is often preferred.
+
+There is an option to create ggplot-friendly diagnostic plots, using the ggResidPanel package.
+
+Let’s create the diagnostic plots we’re interested in using ggResidPanel. It takes a linear model object as input (lm_oystercatcher) and you can define which plots you want to see using the plots = argument. We are also adding a smoother line (smoother = TRUE) to the plots, which we’ll use to compare against.
+
+```{r}
+resid_panel(lm_oystercatcher,
+            plots = c("resid", "qq", "ls", "cookd"),
+            smoother = TRUE)
+```
+The top left graph plots the Residuals plot. If the data are best explained by a linear line then there should be a uniform distribution of points above and below the horizontal blue line (and if there are sufficient points then the red line, which is a smoother line, should be on top of the blue line). This plot looks pretty good.
+The top right graph shows the Q-Q plot which allows a visual inspection of normality. If the residuals are normally distributed, then the points should lie on the diagonal blue line. This plot looks good.
+The bottom left Location-Scale graph allows us to investigate whether there is any correlation between the residuals and the predicted values and whether the variance of the residuals changes significantly. If not, then the red line should be horizontal. If there is any correlation or change in variance then the red line will not be horizontal. This plot is fine.
+The last graph shows the Cook’s distance and tests if any one point has an unnecessarily large effect on the fit. A rule of thumb is that if any value is larger than 1.0, then it might have a large effect on the model. If not, then no point has undue influence. This plot is good. There are different ways to determine the threshold (apart from simply setting it to 1) and in this plot the blue dashed line is at 4/n, with n being the number of samples. At this threshold there are some data points that may be influential, but I personally find this threshold rather strict.
+
+We can see that these graphs are very much in line with what we’ve just looked at using the test, which is reassuring. The groups all appear to have the same spread of data, and the Q-Q plot shows that the assumption of normality is alright.
+
+Note: At this stage, I should point out that I nearly always stick with the graphical method for assessing the assumptions of a test. Assumptions are rarely either completely met or not met and there is always some degree of personal assessment.
+
+Whilst the formal statistical tests (like Shapiro-Wilk) are technically fine, they can often create a false sense of things being absolutely right or wrong in spite of the fact that they themselves are still probabilistic statistical tests. In these exercises we are using both approaches whilst you gain confidence and experience in interpreting the graphical output and whilst it is absolutely fine to use both in the future I would strongly recommend that you don’t rely solely on the statistical tests in isolation.
+
+
+
+### 4. Implement and interpret the test
+
+As is often the case, performing the actual statistical test is the least of our efforts. In R we perform the ANOVA on the linear model object, lm_oystercatcher in this case. This takes the linear model (i.e. finds the means of the three groups and calculates a load of intermediary data that we need for the statistical analysis) and stores this information in an R object (which we’ve called lm_oystercatcher).
+```{r}
+anova(lm_oystercatcher)
+```
+
+In the output:
+
+The 1st line just tells you the that this is an ANOVA test
+The 2nd line tells you what the response variable is (in this case feeding)
+The 3rd, 4th and 5th lines are an ANOVA table which contain some useful values:
+The Df column contains the degrees of freedom values on each row, 2 and 117 (which we can use for the reporting)
+The F value column contains the F statistic, 150.78 (which again we’ll need for reporting).
+The p-value is 2.2e-16 and is the number directly under the Pr(>F) on the 4th line (to be precise, it is 4.13e-33 but anything smaller than 2.2e-16 gets reported as < 2.2e-16).
+The other values in the table (in the Sum Sq and Mean Sq) columns are used to calculate the F statistic itself and we don’t need to know these.
+The 6th line has some symbolic codes to represent how big (small) the p-value is; so, a p-value smaller than 0.001 would have a *** symbol next to it (which ours does). Whereas if the p-value was between 0.01 and 0.05 then there would simply be a * character next to it, etc.
+
+Since the p-value is very small (much smaller than the standard significance level of 0.05) we can say “that it is very unlikely that these three samples came from the same parent distribution” and as such we can reject our null hypothesis and state that:
+
+A one-way ANOVA showed that the mean feeding rate of oystercatchers differed significantly between locations (p = 4.13e-33).
+
+One drawback with using an ANOVA test is that it only tests to see if all of the means are the same. If we get a significant result using ANOVA then all we can say is that not all of the means are the same. To test for signficant differences between group means we can use Tukey's range test.
+
+
+
+### 5. Summary
+
+We use an ANOVA to test if there is a difference in means between multiple continuous response variables
+We check assumptions with diagnostic plots and check if the residuals are normally distributed
+We use post-hoc testing to check for significant differences between the group means, for example using Tukey’s range test

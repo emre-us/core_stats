@@ -125,3 +125,15 @@ bartlett.test(feeding ~ site,
 ```
 
 Based on the p-value of 0.8624, we see that each group appears to have comparable variance.
+
+#### 3.3. Graphical interpretation and diagnostic plots
+Assessing assumptions via these tests can be cumbersome, but also a bit misleading at times. It reduces the answer to the question “is the assumption met?” to a yes/no, based on some statistic and associated p-value.
+
+This does not convey that things aren’t always so clear-cut and that there is a lot of grey area that we need to navigate. As such, assessing assumptions through graphical means - using diagnostic plots - is often preferred.
+
+There is an option to create ggplot-friendly diagnostic plots, using the ggResidPanel package.
+```{r}
+install.packages("ggResidpanel")
+library(ggResidpanel)
+```
+
